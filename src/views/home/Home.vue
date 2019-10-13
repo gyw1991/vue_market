@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import { getHomeData, addToCart } from './../../serve/api/index'
+import { getHomeData, postToCart } from './../../serve/api/index'
 import { showBack, animate } from './../../config/untils'
 import { Toast } from 'vant'
 import PubSub from 'pubsub-js'

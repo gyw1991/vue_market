@@ -31,8 +31,8 @@
 </template>
 
 <script>
-import { mapState, mapMutations,mapActions } from 'vuex'
-import { getAutoLogin } from './../../serve/api/index'
+import { mapState, mapMutations, mapActions } from 'vuex'
+import { getAutoLogin,getCartInfo } from './../../serve/api/index'
 export default {
   name: 'Dashboard',
   data() {
@@ -63,7 +63,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['cart']),
+    ...mapState(['cart', 'userInfo']),
     tagNum() {
       let num = 0
       if (this.cart) {
@@ -77,12 +77,19 @@ export default {
     }
   },
   methods: {
-    ...mapMutations(['initCart','initUserInfo']),
-    
+    ...mapMutations(['initCart', 'initUserInfo']),
+    async _initCart() {
+      let res = await getCartInfo()
+      console.log(res)
+    }
   },
-  mounted() {
+  created() {
     //1.自动登录
     this.initUserInfo()
+    //2.获取购物车数据
+    if(this.userInfo.token) {
+      this._initCart()
+    }
   }
 }
 </script>

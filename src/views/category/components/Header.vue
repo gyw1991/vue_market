@@ -49,8 +49,8 @@ export default {}
         height: 1rem;
       }
       .searchPrompt {
-            color: #B5B5B5;
-        }
+        color: #b5b5b5;
+      }
     }
   }
 }

@@ -76,7 +76,10 @@
 import BScroll from 'better-scroll'
 import { getCategoriesData, getCategoriesdetail } from '@/serve/api/index'
 // import PubSub from 'pubsub-js'
-import { mapMutations } from 'vuex'
+import { mapMutations, mapState } from 'vuex'
+import { Toast } from 'vant'
+import { postToCart } from '@/serve/api/index.js'
+import { userInfo } from 'os'
 export default {
   name: 'cateContent',
   data() {
@@ -117,14 +120,41 @@ export default {
       this.menuScroll.scrollToElement(curItem, 400)
       this.reqCategoriesData()
     },
-    handleCartClick(goods) {
-      console.log('222')
-      console.log(goods)
-      this.addToCart(goods)
+    async handleCartClick(goods) {
+      // console.log(goods)
+      if (this.userInfo.token) {
+        // console.log(goods)
+        let user_id = this.userInfo.token
+        // console.log(user_id)
+        let params = {
+          user_id,
+          goods_id: goods.id,
+          goods_name: goods.name,
+          goods_price: goods.price,
+          small_image: goods.small_image
+        }
+
+        let res = await postToCart(params)
+        console.log(res)
+        if(res.success_code === 200) {
+          this.addToCart(goods)
+        }
+      } else {
+        Toast({
+          message: '请先登录',
+          duration: 800
+        })
+        window.setTimeout(() => {
+          this.$router.push('/login')
+        }, 1000)
+      }
     }
   },
   created() {
     this.reqCategoriesData()
+  },
+  computed: {
+    ...mapState(['userInfo'])
   }
 }
 </script>

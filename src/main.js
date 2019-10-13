@@ -4,6 +4,7 @@ import './style/common.less'
 import router from './router/router'
 import VueLazyload from 'vue-lazyload'
 import store from './store/store'
+
 Vue.use(VueLazyload)
 // 1.fastclick
 // import FastClick from 'fastclick'

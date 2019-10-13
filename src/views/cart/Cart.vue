@@ -12,7 +12,7 @@
           <section>
             <div class="shopCartListCon" v-for="(goods, index) in cart" :key="goods.goods_id">
               <!-- key:{{key}}-----------value:{{value}} -->
-              
+
               <div class="left">
                 <a
                   href="javascript:;"
@@ -78,7 +78,7 @@ export default {
       goodsCount: 0
     }
   },
-  
+
   methods: {
     ...mapMutations(['removeGoods', 'goodsSelect', 'addToCart', 'selectAll','initUserInfo']),
     countDecrease(value) {
@@ -332,7 +332,6 @@ export default {
   background-color: #e9232c;
   border-radius: 1rem;
   margin-right: 0.5rem;
-
   display: flex;
   justify-content: center;
   align-items: center;
