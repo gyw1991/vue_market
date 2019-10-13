@@ -107,7 +107,11 @@ export default {
     _initMenuScroll() {
       this.menuScroll = new BScroll(this.$refs.leftMenu, {
         scrollY: true,
-        click: true
+        click: true,
+        // 触摸
+        tap: true,
+        // 鼠标滚动
+        mouseWheel: true
       })
     },
     // 左侧菜单点击监听

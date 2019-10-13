@@ -75,7 +75,7 @@ export default {
     async getCode() {
       let res = await getVcode(this.phone)
       if (res.success_code === 200) {
-        console.log(res)
+        console.log(res.code)
         this.countDown = 5
         this.timer = window.setInterval(() => {
           this.countDown -= 1

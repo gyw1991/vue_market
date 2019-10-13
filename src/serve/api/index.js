@@ -35,15 +35,15 @@ export const getAutoLogin = function () {
 
 // 3.购物车
 // 3.1 添加到购物车
-export const addToCart = function (user_id, goods_id, goods_name, goods_price, small_image) {
+export const addToCart = function (userId, goodsId, goodsName, goodsPrice, smallImage) {
   return ajax(
     baseUrl + '/api/cart/add',
     {
-      user_id,
-      goods_id,
-      goods_name,
-      goods_price,
-      small_image
+      user_id: userId,
+      goods_id: goodsId,
+      goods_name: goodsName,
+      goods_price: goodsPrice,
+      small_image: smallImage
     },
     'POST'
   )

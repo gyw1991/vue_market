@@ -25,12 +25,12 @@
                 <img :src="goods.small_image" alt />
               </div>
               <div class="right">
-                <a href="#">{{goods.goods_name}}</a>
+                <a href="#">{{goods.name}}</a>
                 <div class="bottomContent">
-                  <p class="shopPrice">&yen;{{goods.goods_price}}</p>
+                  <p class="shopPrice">&yen;{{goods.price}}</p>
                   <div class="shopDeal">
                     <span @click="countDecrease(value)">-</span>
-                    <input disabled type="number" v-model="goods.num" />
+                    <input disabled type="number" v-model="goods.count" />
                     <span @click="countIncrease(value)">+</span>
                   </div>
                 </div>
