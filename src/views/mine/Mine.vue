@@ -43,7 +43,7 @@
 </template>
 
 <script>
-import { getGoodsCart } from './../../serve/api/index'
+import { getCartInfo } from './../../serve/api/index'
 import LoginSelect from './../login/LoginSelect'
 import { mapState,mapMutations } from 'vuex'
 export default {

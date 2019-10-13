@@ -10,9 +10,9 @@
         <!--中间内容-->
         <main class="contentWrapperList">
           <section>
-            <div class="shopCartListCon" v-for="(goods, index) in cart" :key="goods.goods_id">
-              <!-- key:{{key}}-----------value:{{value}} -->
-              
+            <div class="shopCartListCon" v-for="(goods, key) in cart" :key="key">
+              <!-- key:{{key}}-----------value:{{goods}}----{{index}} -->
+
               <div class="left">
                 <a
                   href="javascript:;"
@@ -25,12 +25,12 @@
                 <img :src="goods.small_image" alt />
               </div>
               <div class="right">
-                <a href="#">{{goods.name}}</a>
+                <a href="#">{{goods.goods_name}}</a>
                 <div class="bottomContent">
-                  <p class="shopPrice">&yen;{{goods.price}}</p>
+                  <p class="shopPrice">&yen;{{goods.goods_price}}</p>
                   <div class="shopDeal">
                     <span @click="countDecrease(value)">-</span>
-                    <input disabled type="number" v-model="goods.count" />
+                    <input disabled type="number" v-model="goods.num" />
                     <span @click="countIncrease(value)">+</span>
                   </div>
                 </div>
@@ -78,7 +78,7 @@ export default {
       goodsCount: 0
     }
   },
-  
+
   methods: {
     ...mapMutations(['removeGoods', 'goodsSelect', 'addToCart', 'selectAll','initUserInfo']),
     countDecrease(value) {
@@ -133,7 +133,7 @@ export default {
       let num = 0
       Object.values(this.cart).forEach(item => {
         if (item.checked) {
-          num += item.count
+          num += item.num
         }
       })
       return num
@@ -153,8 +153,8 @@ export default {
       let total = this.typeNumber > 0
       Object.values(this.cart).forEach(item => {
         if (item.checked) {
-          console.log(item)
-          total += item.price * item.count
+          // console.log(item.goods_price)
+          total += item.goods_price * item.num
         }
       })
       return Number(total).toFixed(2)
@@ -332,7 +332,6 @@ export default {
   background-color: #e9232c;
   border-radius: 1rem;
   margin-right: 0.5rem;
-
   display: flex;
   justify-content: center;
   align-items: center;

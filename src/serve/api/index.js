@@ -35,20 +35,22 @@ export const getAutoLogin = function () {
 
 // 3.购物车
 // 3.1 添加到购物车
-export const addToCart = function (userId, goodsId, goodsName, goodsPrice, smallImage) {
+
+export const postToCart = function ({ user_id, goods_id, goods_name, goods_price, small_image }) {
   return ajax(
     baseUrl + '/api/cart/add',
     {
-      user_id: userId,
-      goods_id: goodsId,
-      goods_name: goodsName,
-      goods_price: goodsPrice,
-      small_image: smallImage
+      user_id,
+      goods_id,
+      goods_name,
+      goods_price,
+      small_image
     },
     'POST'
   )
 }
 // 3.2获取购物车数据
-export const getGoodsCart = function (user_id) {
-  return ajax(baseUrl + '/api/cart/search/' + user_id)
+export const getCartInfo = function (id) {
+  console.log(`user_token:${id}`)
+  return ajax(baseUrl + '/api/cart/search/' + id)
 }

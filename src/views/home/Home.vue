@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import { getHomeData, addToCart } from './../../serve/api/index'
+import { getHomeData, postToCart } from './../../serve/api/index'
 import { showBack, animate } from './../../config/untils'
 import { Toast } from 'vant'
 import PubSub from 'pubsub-js'
@@ -96,7 +96,13 @@ export default {
         // 判断用户是否登陆
         if (this.userInfo.token) {
           // this.handleAddCart(goods)
-          this.addToCart(goods)
+          console.log(goods)
+          this.addToCart({
+            goods_id: goods.id,
+            goods_name: goods.name,
+            small_image: goods.small_image,
+            goods_price: goods.price
+          })
           Toast({
             message: '成功添加到购物车',
             duration: 1000
