@@ -43,18 +43,33 @@ export default {
       this.$router.replace('/order')
     },
     onAdd() {
-      Toast('新增地址')
+      // Toast('新增地址')
       this.$router.push('/order/addressList/editAddress')
     },
     onEdit(item, index) {
-      Toast('编辑地址:' + index)
+      // Toast('编辑地址:' + index)
+      console.log(item, index)
+      this.$router.push('/order/addressList/editAddress?address_id=' + item.addressId)
     },
     // 获取用户收获地址
     async _initAddressList() {
       let res = await getAddressList(this.userInfo.token)
       console.log(res)
       if (res.success_code === 200) {
-        this.list = res.data
+        this.list = []
+        let addressArr = res.data
+        console.log(res.data)
+        addressArr.forEach((item, index) => {
+          let obj = {
+            id: String(index + 1),
+            name: item.address_name,
+            tel: item.address_phone,
+            address: item.address_area + item.address_area_detail,
+            addressId: item._id
+          }
+          this.list.push(obj)
+        });
+        console.log(this.list)
       }
     }
   },
@@ -72,6 +87,9 @@ export default {
         message: '登录已过期，请重新登录',
         duration: 800
       })
+      window.setTimeout(()=>{
+        this.$router.push('/dashboard/cart')
+      },800)
     }
   }
 }

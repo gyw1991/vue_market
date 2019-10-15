@@ -75,7 +75,7 @@ export const clearCart = function (userId) {
 // 4.收获地址管理
 // 4.1 获取收获地址列表
 export const getAddressList = (userId) => {
-  console.log(userId)
+  console.log(baseUrl + '/api/address/search/' + userId)
   return ajax(baseUrl + '/api/address/search/' + userId)
 }
 
@@ -86,8 +86,12 @@ export const getAddressList = (userId) => {
 address_post_code, address_tag, province, city, county, areaCode}
  */
 export const newAddress = (params) => {
+  console.log(params)
   return ajax(baseUrl + '/api/address/add', params, 'POST')
 }
 
-// 4.3 获取修改用户信息
-// export const 
+// 4.3 获取修改要修改的地址
+export const editAddress = function (params) {
+  console.log(params)
+  return ajax(baseUrl + '/api/address/one', params, 'POST')
+}
