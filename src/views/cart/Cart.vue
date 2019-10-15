@@ -5,6 +5,7 @@
         <h4>
           <strong>购物车</strong>
         </h4>
+        <span class="clear-cart" @click="handleCartClear()">清空购物车</span>
       </header>
       <div class="contentWrapper">
         <!--中间内容-->
@@ -29,9 +30,9 @@
                 <div class="bottomContent">
                   <p class="shopPrice">&yen;{{goods.goods_price}}</p>
                   <div class="shopDeal">
-                    <span @click="countDecrease(value)">-</span>
+                    <span @click="countDecrease(goods)">-</span>
                     <input disabled type="number" v-model="goods.num" />
-                    <span @click="countIncrease(value)">+</span>
+                    <span @click="countIncrease(goods)">+</span>
                   </div>
                 </div>
               </div>
@@ -57,19 +58,26 @@
             </div>
           </div>
           <div class="tabBarRight">
-            <a href="#" class="pay" @click.stop="goOrder()">去结算({{selectedNumber}})</a>
+            <a href="#" class="pay" @click.stop="goSettlement()">去结算({{selectedNumber}})</a>
           </div>
         </div>
       </div>
     </div>
-    <LoginSelect v-else/>
+    <LoginSelect v-else />
   </div>
 </template>
 
 <script>
-import { mapState, mapMutations, addToCart, goodsSelect, initUserInfo } from 'vuex'
-import { Dialog } from 'vant'
+import {
+  mapState,
+  mapMutations,
+  addToCart,
+  goodsSelect,
+  initUserInfo
+} from 'vuex'
+import { Dialog, Toast } from 'vant'
 import LoginSelect from './../login/LoginSelect'
+import { cartNumChange, clearCart } from '@/serve/api/index.js'
 
 export default {
   name: 'Cart',
@@ -78,39 +86,72 @@ export default {
       goodsCount: 0
     }
   },
-
   methods: {
-    ...mapMutations(['removeGoods', 'goodsSelect', 'addToCart', 'selectAll','initUserInfo']),
-    countDecrease(value) {
+    ...mapMutations([
+      'removeGoods',
+      'goodsSelect',
+      'addToCart',
+      'selectAll',
+      'initUserInfo',
+      'initCart',
+      'clearLocalCart'
+    ]),
+    async countDecrease(goods) {
       // 商品-1
-      console.log(typeof value.count)
-      if (value.count > 1) {
-        // 减少1
-        this.removeGoods(value)
+      // console.log(typeof goods.num)
+      let params = {
+        user_id: this.userInfo.token,
+        goods_id: goods.goods_id,
+        type: 'reduce'
       }
-      if (value.count === 1) {
+      if (goods.num > 1) {
+        let res = await cartNumChange(params)
+        console.log(res)
+        // 减少1
+        if (res.success_code === 200) {
+          this.removeGoods(goods.goods_id)
+        } else {
+          Toast({
+            message: '操作失败',
+            duration: 800
+          })
+        }
+      }
+      if (goods.num === 1) {
         // 提示用户
         Dialog.confirm({
           title: '提示',
           message: '确定要将该商品从购物车中移除吗？'
         })
-          .then(() => {
+          .then(async () => {
             // on confirm
-            this.removeGoods(value)
+            let res = await cartNumChange(params)
+            if (res.success_code === 200) {
+              this.removeGoods(goods.goods_id)
+            }
           })
           .catch(() => {
             // on cancel
           })
       }
     },
-    countIncrease(goods) {
-      // 商品+1
-      this.addToCart({
-        goodsId: goods.id,
-        goodsName: goods.name,
-        smallImage: goods.small_image,
-        goodsPrice: goods.price
-      })
+    async countIncrease(goods) {
+      let params = {
+        user_id: this.userInfo.token,
+        goods_id: goods.goods_id,
+        type: 'add'
+      }
+      let res = await cartNumChange(params)
+      console.log(res)
+      if (res.success_code === 200) {
+        // 商品+1
+        this.addToCart({
+          goods_id: goods.goods_id,
+          goods_name: goods.goods_name,
+          small_image: goods.small_image,
+          goods_price: goods.goods_price
+        })
+      }
     },
     // 商品的选中/取消
     singleSelect(id) {
@@ -121,8 +162,26 @@ export default {
       this.isSelectAll = !this.isSelectAll
       this.selectAll(this.isSelectAll)
     },
+    // 清空购物车
+    async handleCartClear() {
+      Dialog.confirm({
+        title: '提示',
+        message: '确定要将该商品从购物车中移除吗？'
+      })
+        .then(async () => {
+          // on confirm
+          let res = await clearCart(this.userInfo.token)
+          console.log(res.data)
+          if (res.data.success_code === 200) {
+            this.clearLocalCart()
+          }
+        })
+        .catch(() => {
+          // on cancel
+        })
+    },
     // 跳转到订单结算页面
-    goOrder() {
+    goSettlement() {
       this.$router.push('/order')
     }
   },
@@ -185,6 +244,12 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
+    .clear-cart {
+      line-height: 2.6rem;
+      position: absolute;
+      right: 1rem;
+      color: red;
+    }
   }
 
   .contentWrapper {
@@ -273,7 +338,7 @@ export default {
 }
 
 .shopCartListCon .right .shopDeal span {
-  display: inline-block;
+  // display: inline-block;
   width: 1rem;
   height: 1.2rem;
   line-height: 1.2rem;

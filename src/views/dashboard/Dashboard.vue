@@ -33,6 +33,7 @@
 <script>
 import { mapState, mapMutations, mapActions } from 'vuex'
 import { getAutoLogin,getCartInfo } from './../../serve/api/index'
+import axios from 'axios'
 export default {
   name: 'Dashboard',
   data() {
@@ -78,20 +79,13 @@ export default {
   },
   methods: {
     ...mapMutations(['initCart', 'initUserInfo','updateCart']),
-    async _initCart() {
-      let res = await getCartInfo(this.userInfo.token)
-      if(res.success_code === 200) {
-        this.initCart(res.data)
-      }
-      // console.log(res.data)
-    }
   },
   created() {
     //1.自动登录
     this.initUserInfo()
     //2.获取购物车数据
     if(this.userInfo.token) {
-      this._initCart()
+      this.initCart(this.userInfo.token)
     }
   }
 }

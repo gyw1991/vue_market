@@ -18,11 +18,12 @@
 </template>
 
 <script>
+import areaList from '@/config/area.js'
 export default {
   name: 'EditAddress',
   data() {
     return {
-      areaList,
+      areaList: areaList,
       searchResult: []
     }
   },

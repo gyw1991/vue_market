@@ -75,7 +75,6 @@
 <script>
 import BScroll from 'better-scroll'
 import { getCategoriesData, getCategoriesdetail } from '@/serve/api/index'
-// import PubSub from 'pubsub-js'
 import { mapMutations, mapState } from 'vuex'
 import { Toast } from 'vant'
 import { postToCart } from '@/serve/api/index.js'

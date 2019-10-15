@@ -67,16 +67,51 @@
 </template>
 
 <script>
-import PubSub from 'pubsub-js'
+// import PubSub from 'pubsub-js'
+import { postToCart } from '@/serve/api/index.js'
+import { mapState,mapMutations } from 'vuex'
+import { Toast } from 'vant'
+
 export default {
   name: 'homeFlashSale',
   props: {
     flashSaleList: Array
   },
   methods: {
-    handleCartClick(goods) {
-      PubSub.publish('HomeAddToCart', goods)
+    ...mapMutations(['addToCart']),
+    async handleCartClick(goods) {
+      // PubSub.publish('HomeAddToCart', goods)
+      let user_id = this.userInfo.token
+      // console.log(user_id)
+      let params = {
+        user_id,
+        goods_id: goods.id,
+        goods_name: goods.name,
+        goods_price: goods.price,
+        small_image: goods.small_image
+      }
+      let res = await postToCart(params)
+      console.log(res)
+      if (res.success_code === 200) {
+        this.addToCart({
+          goods_id: goods.id,
+          goods_name: goods.name,
+          small_image: goods.small_image,
+          goods_price: goods.price
+        })
+      } else {
+        Toast({
+          message: '请先登录',
+          duration: 800
+        })
+        window.setTimeout(() => {
+          this.$router.push('/login')
+        }, 1000)
+      }
     }
+  },
+  computed: {
+    ...mapState(['userInfo'])
   }
 }
 </script>
