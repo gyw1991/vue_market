@@ -115,8 +115,8 @@ export default new Vuex.Store({
     // 8.获取用户信息
     initUserInfo (state) {
       let userInfo = getStorage('userInfo')
-      console.log('自动获取用户信息成功')
       if (userInfo) {
+        console.log('自动获取用户信息成功')
         state.userInfo = JSON.parse(userInfo)
       } else {
         console.log('请登录')

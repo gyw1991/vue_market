@@ -44,7 +44,7 @@ export default {
     },
     onAdd() {
       // Toast('新增地址')
-      this.$router.push('/order/addressList/editAddress')
+      this.$router.push('/order/addressList/newAddress')
     },
     onEdit(item, index) {
       // Toast('编辑地址:' + index)

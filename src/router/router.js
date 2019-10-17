@@ -12,6 +12,8 @@ const Mine = () => import('./../views/mine/Mine.vue')
 const Order = () => import('./../views/order/Order.vue')
 const AddressList = () => import('./../views/order/components/AddressList.vue')
 const EditAddress = () => import('./../views/order/components/subs/EditAddress.vue')
+const NewAddress = () => import('./../views/order/components/subs/NewAddress.vue')
+NewAddress
 const Login = () => import('./../views/login/Login.vue')
 const UserCenter = () => import('./../views/mine/components/UserCenter.vue')
 
@@ -75,6 +77,11 @@ export default new Router({
               path: 'editAddress',
               component: EditAddress,
               name: 'EditAddress'
+            },
+            {
+              path: 'newAddress',
+              name: 'NewAddress',
+              component: NewAddress
             }
           ]
         }

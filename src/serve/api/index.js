@@ -95,3 +95,14 @@ export const editAddress = function (params) {
   console.log(params)
   return ajax(baseUrl + '/api/address/one', params, 'POST')
 }
+
+// 4.4 提交修改后的地址
+export const updateAddress = function (params) {
+  console.log(params)
+  return ajax(baseUrl + '/api/address/edit', params, 'POST')
+}
+// 4.5删除地址
+export const deleteAddress = function(addressId) {
+  console.log(addressId)
+  return ajax(baseUrl + '/api/address/del/' + addressId)
+}

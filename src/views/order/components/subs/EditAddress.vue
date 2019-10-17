@@ -1,54 +1,43 @@
 <template>
   <div class="edit-address">
-    <div class="heade">
-      <van-nav-bar title="新增地址" left-text="返回" left-arrow @click-left="onClickLeft" />
-    </div>
-    <div class="content">
-      <van-address-edit
-        :area-list="areaList"
-        show-postal
-        show-set-default
-        show-search-result
-        :search-result="searchResult"
-        @save="onSave"
-        @change-detail="onChangeDetail"
-      />
-    </div>
+    <van-address-edit
+      :area-list="areaList"
+      :address-info="addressInfo"
+      show-postal
+      show-delete
+      show-set-default
+      @save="onSave"
+      @delete="onDelete"
+    />
   </div>
 </template>
-
 <script>
 import areaList from '@/config/area.js'
-import { newAddress,editAddress } from '@/serve/api/index.js'
+import { editAddress, updateAddress, deleteAddress } from '@/serve/api/index.js'
 import { mapState } from 'vuex'
 import { Toast } from 'vant'
 export default {
   name: 'EditAddress',
   data() {
     return {
-      areaList: areaList,
-      searchResult: [],
-      addressId: null
+      areaList,
+      addressInfo: {}
     }
   },
   mounted() {
     let addressId = this.$route.query.address_id
-    console.log(addressId)
     this._reqCurAddress(addressId)
-
   },
   methods: {
-    onClickLeft() {
-      this.$router.go(-1)
-    },
     async onSave(content) {
       // Toast('save')
       console.log(content)
       let params = {
+        address_id: content.id,
         user_id: this.userInfo.token,
         address_name: content.name,
         address_phone: content.tel,
-        address_area: content.province+content.county,
+        address_area: content.province + content.county,
         address_area_detail: content.addressDetail,
         address_post_code: content.postalCode,
         address_tag: content.isDefault,
@@ -57,31 +46,44 @@ export default {
         county: content.county,
         areaCode: content.areaCode
       }
-
-      let res = await newAddress(params)
+      let res = await updateAddress(params)
       if (res.success_code === 200) {
         Toast({
-          message: '添加成功',
-          duration: 500
+          message: '修改成功',
+          duration: 800
         })
-        this.$router.go(-1)
+        window.setTimeout(() => {
+          this.$router.go(-1)
+        }, 800)
       }
     },
-    onChangeDetail(val) {
-      if (val) {
-        this.searchResult = [
-          {
-            name: '黄龙万科中心',
-            address: '杭州市西湖区'
-          }
-        ]
-      } else {
-        this.searchResult = []
-      }
+    async onDelete() {
+      let res = await deleteAddress(this.addressInfo.id)
+      console.log(res)
+      this.$router.go(-1)
     },
     async _reqCurAddress(id) {
-      let res = await editAddress({user_id: this.userInfo.token, address_id: id})
+      let res = await editAddress({
+        user_id: this.userInfo.token,
+        address_id: id
+      })
       console.log(res)
+      if (res.success_code === 200) {
+        let data = res.data
+        let addressInfo = {
+          id: data._id,
+          name: data.address_name,
+          tel: data.address_phone,
+          province: data.province,
+          city: data.city,
+          county: data.county,
+          addressDetail: data.address_area_detail,
+          areaCode: data.areaCode,
+          postalCode: data.address_post_code,
+          isDefaule: false
+        }
+        this.addressInfo = addressInfo
+      }
     }
   },
   computed: {
@@ -90,12 +92,5 @@ export default {
 }
 </script>
 
-<style lang='less' scoped>
-.edit-address {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-}
+<style lang="less">
 </style>
