@@ -5,27 +5,19 @@
         <van-nav-bar title="订单中心" left-text="返回" left-arrow @click-left="onClickLeft" />
       </div>
       <div class="content">
-        <van-contact-card type="add" @click="showList" add-text="添加收货地址"></van-contact-card>
+        <van-contact-card
+          :type="this.address.type"
+          @click="showList"
+          add-text="添加收货地址"
+          :name="address.name"
+          :tel="address.tel"
+        ></van-contact-card>
         <div class="order-info">
           <van-cell-group>
-            <van-cell title="送到时间" value="选择送货时间" is-link />
-            <van-cell value="内容" is-link center="true">
+            <van-cell title="送到时间" :value="sendDate" is-link @click="handleDatePicker" />
+            <van-cell value="内容" is-link>
               <template slot="title">
-                <img
-                  width="50px"
-                  src="https://img.ddimg.mobi/product/73729284b788d1558072397291.jpg!deliver.product.list"
-                  alt
-                />
-                <img
-                  width="50px"
-                  src="https://img.ddimg.mobi/product/73729284b788d1558072397291.jpg!deliver.product.list"
-                  alt
-                />
-                <img
-                  width="50px"
-                  src="https://img.ddimg.mobi/product/73729284b788d1558072397291.jpg!deliver.product.list"
-                  alt
-                />
+                <img width="50px" v-for="(value, key) in cart" :key="key" :src="value.small_image" />
               </template>
             </van-cell>
           </van-cell-group>
@@ -42,6 +34,17 @@
             <van-cell title="运送费用" value="包邮" />
           </van-cell-group>
         </div>
+
+        <van-popup v-model="datePickShow" closeable position="bottom" :style="{ height: '30%' }">
+          <van-datetime-picker
+            type="datetime"
+            :min-date="minDate"
+            :max-date="maxDate"
+            @confirm='onConfirm'
+            @cancel='onCancel'
+          />
+        </van-popup>
+
         <div class="bottom-submit">
           <van-submit-bar :price="3050" button-text="提交订单" @submit="onSubmit" />
         </div>
@@ -53,14 +56,19 @@
 
 <script>
 import { Toast } from 'vant'
+import { mapState } from 'vuex'
+import moment from 'moment'
 
 export default {
   name: 'Order',
   data() {
-    return {}
-  },
-  mounted() {
-    console.log(this.$route)
+    return {
+      type: 'add',
+      datePickShow: false,
+      minDate: new Date(),
+      maxDate: new Date(2020, 10, 1),
+      sendDate:''
+    }
   },
   methods: {
     onClickLeft() {
@@ -71,9 +79,22 @@ export default {
     },
     onSubmit() {
       alert('提交订单')
+    },
+    handleDatePicker() {
+      this.datePickShow = true
+    },
+    onConfirm(value) {
+      console.log(value)
+      this.sendDate = moment(value).format('L')
+      this.datePickShow = false
+    },
+    onCancel() {
+      this.datePickShow = false
     }
   },
-  computed: {}
+  computed: {
+    ...mapState(['address', 'cart'])
+  }
 }
 </script>
 

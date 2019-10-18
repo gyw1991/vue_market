@@ -72,6 +72,27 @@ export const clearCart = function (userId) {
   return axios.get(baseUrl + '/api/cart/clear/' + userId)
 }
 
+// 3.4 单个商品的选中和取消
+// params:{userId, goodsId}
+export const handleSingleGoods = function (params) {
+  return ajax(baseUrl + '/api/cart/singer_select', params, 'POST')
+}
+
+// 3.5 所有上的商品的取消与选中
+// params:{userId, flag}
+export const handleAllGoods = function (params) {
+  ajax(baseUrl + '/api/cart/all_select', params, 'POST')
+}
+
+// 3.6 查询所有已经被选中的商品
+export const getSeletedGoods = function (userId) {
+  ajax(baseUrl + '/api/cart/selected/' + userId)
+}
+
+// 3.7 删除已下单商品
+export const deleteCheckedGoods = function (userId) {
+  ajax(baseUrl + '/api/cart/del_checked/' + userId)
+}
 // 4.收获地址管理
 // 4.1 获取收获地址列表
 export const getAddressList = (userId) => {
@@ -102,7 +123,7 @@ export const updateAddress = function (params) {
   return ajax(baseUrl + '/api/address/edit', params, 'POST')
 }
 // 4.5删除地址
-export const deleteAddress = function(addressId) {
+export const deleteAddress = function (addressId) {
   console.log(addressId)
   return ajax(baseUrl + '/api/address/del/' + addressId)
 }

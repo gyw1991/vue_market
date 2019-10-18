@@ -5,7 +5,7 @@
         <van-nav-bar title="地址管理" left-text="返回" left-arrow @click-left="onClickLeft" />
       </div>
       <div class="content">
-        <van-address-list v-model="chosenAddressId" :list="list" @add="onAdd" @edit="onEdit" />
+        <van-address-list v-model="chosenAddressId" :list="list" @add="onAdd" @edit="onEdit" @click-item='onItemClick' />
       </div>
     </div>
 
@@ -16,7 +16,7 @@
 <script>
 import { Toast } from 'vant'
 import { getAddressList } from '@/serve/api/index.js'
-import { mapState } from 'vuex'
+import { mapState,mapMutations } from 'vuex'
 export default {
   name: 'AddressList',
   data() {
@@ -39,6 +39,7 @@ export default {
     }
   },
   methods: {
+    ...mapMutations(['selectedAddress']),
     onClickLeft() {
       this.$router.replace('/order')
     },
@@ -50,6 +51,18 @@ export default {
       // Toast('编辑地址:' + index)
       console.log(item, index)
       this.$router.push('/order/addressList/editAddress?address_id=' + item.addressId)
+    },
+    onItemClick(item, index) {
+      console.log(item)
+      this.selectedAddress({
+        id: item.id,
+        name: item.name,
+        tel: item.tel,
+        type: 'edit'
+      })
+      window.setTimeout(()=>{
+        this.$router.back()
+      },800)
     },
     // 获取用户收获地址
     async _initAddressList() {

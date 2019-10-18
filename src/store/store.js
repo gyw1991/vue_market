@@ -3,13 +3,15 @@ import Vuex from 'vuex'
 import axios from 'axios'
 import { getStorage, setStorage, removeStorage } from './../config/untils'
 import { getAutoLogin, getCartInfo } from './../serve/api/index'
+import { stat } from 'fs'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
     cart: {},
-    userInfo: {}
+    userInfo: {},
+    address: {}
   },
   mutations: {
     // 1.添加到购物车
@@ -126,6 +128,11 @@ export default new Vuex.Store({
     removeUserData (state) {
       state.userInfo = {}
       removeStorage('userInfo')
+    },
+    // 10.选中地址
+    selectedAddress (state, address) {
+      console.log(address)
+      state.address = address
     }
   }
 })
