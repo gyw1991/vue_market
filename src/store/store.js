@@ -2,8 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
 import { getStorage, setStorage, removeStorage } from './../config/untils'
-import { getAutoLogin, getCartInfo } from './../serve/api/index'
-import { stat } from 'fs'
+import { getCartInfo } from './../serve/api/index'
 
 Vue.use(Vuex)
 
@@ -35,7 +34,7 @@ export default new Vuex.Store({
       // 产生新对象添加到state中
       state.cart = { ...cart }
       // 存到本地
-      // setStorage('cart', state.cart)
+      setStorage('cart', state.cart)
     },
     // 减少购物用商品数量
     cartReduce (state, goodsId) {
@@ -51,23 +50,21 @@ export default new Vuex.Store({
     },
     // 2.获取购物车数据
     async initCart (state, id) {
-      let url = 'http://demo.itlike.com/web/xlmc/api/cart/search/'
-      // let res = await getCartInfo(this.userInfo.token)
-      let res = await axios.get(url + id)
-      let data = res.data.data
-      if (res.data.success_code === 200) {
+      let res = await getCartInfo(id)
+      if (res.success_code === 200) {
         let cartObj = {}
-        data.forEach(item => {
+        res.data.forEach(item => {
           cartObj[item.goods_id] = {
             num: item.num,
             goods_id: item.goods_id,
             goods_name: item.goods_name,
             goods_price: item.goods_price,
             small_image: item.small_image,
-            checked: item.checkedcart
+            checked: item.checked
           }
         })
         state.cart = cartObj
+        setStorage('cart', state.cart)
       }
     },
     // 3.删除商品
@@ -85,17 +82,16 @@ export default new Vuex.Store({
         }
         // 同步数据
         state.cart = { ...cart }
-        // setStorage('cart', state.cart)
+        setStorage('cart', state.cart)
       }
     },
     // 4.商品选中/取消选中
-    goodsSelect (state, id) {
+    goodsSelect (state, { id, flag }) {
       let cart = state.cart
-      // console.log(cart[id].checked)
-      cart[id].checked = !cart[id].checked
-      // console.log(cart[id].checked)
+      console.log(flag)
+      cart[id].checked = flag
       state.cart = { ...cart }
-      // setStorage('cart', cart)
+      setStorage('cart', state.cart)
     },
     // 5.全选
     selectAll (state, flag) {
@@ -103,10 +99,13 @@ export default new Vuex.Store({
       Object.values(cart).forEach(item => {
         item.checked = !flag
       })
+      state.cart = { ...cart }
+      setStorage('cart', state.cart)
     },
     // 6.清空购物车
     clearLocalCart (state) {
       state.cart = {}
+      setStorage('cart', state.cart)
     },
     // 7.保存用户信息
     saveUserInfo (state, data) {
@@ -128,6 +127,7 @@ export default new Vuex.Store({
     removeUserData (state) {
       state.userInfo = {}
       removeStorage('userInfo')
+      removeStorage('cart')
     },
     // 10.选中地址
     selectedAddress (state, address) {

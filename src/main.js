@@ -4,8 +4,6 @@ import './style/common.less'
 import router from './router/router'
 import VueLazyload from 'vue-lazyload'
 import store from './store/store'
-
-Vue.use(VueLazyload)
 // 1.fastclick
 // import FastClick from 'fastclick'
 // if ('addEventListener' in document) {
@@ -17,6 +15,8 @@ Vue.use(VueLazyload)
 import './plugins/vant/vant'
 // 3.rem设置
 import './config/rem'
+
+Vue.use(VueLazyload)
 
 new Vue({
   router,

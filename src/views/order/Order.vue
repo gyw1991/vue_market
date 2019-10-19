@@ -15,9 +15,9 @@
         <div class="order-info">
           <van-cell-group>
             <van-cell title="送到时间" :value="sendDate" is-link @click="handleDatePicker" />
-            <van-cell value="内容" is-link>
+            <van-cell :value="`共${checkedGoods.length}件`" is-link center @click="checkOrderList">
               <template slot="title">
-                <img width="50px" v-for="(value, key) in cart" :key="key" :src="value.small_image" />
+                <img width="50px" v-for="goods in checkedGoods" :key="goods.goods_id" :src="goods.small_image" />
               </template>
             </van-cell>
           </van-cell-group>
@@ -30,7 +30,7 @@
             <van-cell title="备注" value="输入您的备注信息" />
           </van-cell-group>
           <van-cell-group style="marginTop:10px">
-            <van-cell title="订单金额" value="￥176.0" />
+            <van-cell title="订单金额" :value="`￥${totalPrice}`" />
             <van-cell title="运送费用" value="包邮" />
           </van-cell-group>
         </div>
@@ -40,13 +40,13 @@
             type="datetime"
             :min-date="minDate"
             :max-date="maxDate"
-            @confirm='onConfirm'
-            @cancel='onCancel'
+            @confirm="onConfirm"
+            @cancel="onCancel"
           />
         </van-popup>
 
         <div class="bottom-submit">
-          <van-submit-bar :price="3050" button-text="提交订单" @submit="onSubmit" />
+          <van-submit-bar :price="totalPrice*100" button-text="提交订单" @submit="onSubmit" />
         </div>
       </div>
     </div>
@@ -67,33 +67,61 @@ export default {
       datePickShow: false,
       minDate: new Date(),
       maxDate: new Date(2020, 10, 1),
-      sendDate:''
+      sendDate: ''
     }
   },
   methods: {
+    // 返回上一页
     onClickLeft() {
-      this.$router.back()
+      this.$router.push('/dashboard/cart')
     },
+    // 选择地址
     showList() {
       this.$router.push('/order/addressList')
     },
+    // 提交订单
     onSubmit() {
       alert('提交订单')
     },
+    // 选择送达十日
     handleDatePicker() {
       this.datePickShow = true
     },
+    // 日期选择确定
     onConfirm(value) {
       console.log(value)
       this.sendDate = moment(value).format('L')
       this.datePickShow = false
     },
+    // 日期选择确定
     onCancel() {
       this.datePickShow = false
+    },
+    // 查看清单详情
+    checkOrderList() {
+      this.$router.push('/order/orderList')
     }
   },
   computed: {
-    ...mapState(['address', 'cart'])
+    ...mapState(['address', 'cart']),
+    checkedGoods() {
+      let list = []
+      Object.values(this.cart).forEach((item, index) => {
+        if (item.checked) {
+          list.push(item)
+        }
+      })
+      return list.slice(0,3)
+    },
+    totalPrice() {
+      let price = 0
+      Object.values(this.cart).forEach((item)=> {
+        if (item.checked) {
+          price += parseFloat(item.goods_price * item.num)
+        }
+      })
+      return price
+    }
   }
 }
 </script>

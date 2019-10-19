@@ -93,6 +93,7 @@ export const getSeletedGoods = function (userId) {
 export const deleteCheckedGoods = function (userId) {
   ajax(baseUrl + '/api/cart/del_checked/' + userId)
 }
+
 // 4.收获地址管理
 // 4.1 获取收获地址列表
 export const getAddressList = (userId) => {

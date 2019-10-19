@@ -19,7 +19,8 @@ import {
   Cell,
   Grid,
   GridItem,
-  DatetimePicker
+  DatetimePicker,
+  Card
 } from 'vant'
 
 // 底部Tabbar
@@ -50,3 +51,5 @@ Vue.use(Grid).use(GridItem)
 Vue.use(Popup)
 // 日期选择
 Vue.use(DatetimePicker)
+// 商品卡片
+Vue.use(Card)

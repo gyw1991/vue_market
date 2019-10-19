@@ -77,7 +77,11 @@ import {
 } from 'vuex'
 import { Dialog, Toast } from 'vant'
 import LoginSelect from './../login/LoginSelect'
-import { cartNumChange, clearCart } from '@/serve/api/index.js'
+import {
+  cartNumChange,
+  clearCart,
+  handleSingleGoods
+} from '@/serve/api/index.js'
 
 export default {
   name: 'Cart',
@@ -154,8 +158,20 @@ export default {
       }
     },
     // 商品的选中/取消
-    singleSelect(id) {
-      this.goodsSelect(id)
+    async singleSelect(id) {
+      let params = {
+        user_id: this.userInfo.token,
+        goods_id: id
+      }
+      let res = await handleSingleGoods(params)
+      console.log(res)
+      if (res.success_code === 200) {
+        if (res.data.checked) {
+          this.goodsSelect({id, flag:true})
+        } else {
+          this.goodsSelect({id, flag:false})
+        }
+      }
     },
     // 购物车全选
     selectAllGoods() {
